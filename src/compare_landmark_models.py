@@ -35,7 +35,7 @@ def compare_models(
     results = {}
     for name, path, kind in (
         (
-            "baseline",
+            "compact_baseline",
             Path(baseline_path) if baseline_path is not None else project_path(config, "checkpoints") / "landmark_mlp_best.pt",
             "landmark_mlp",
         ),

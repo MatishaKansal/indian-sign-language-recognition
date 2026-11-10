@@ -11,6 +11,7 @@ from src.landmark_image_ensemble import (
     MOBILENET_WEIGHTS_NAME,
     MOBILENET_LARGE_WEIGHTS_NAME,
     configure_image_finetuning,
+    compact_landmark_model,
     image_backbone,
     image_feature_dim,
     image_model,
@@ -90,6 +91,26 @@ class LandmarkInferenceTests(unittest.TestCase):
         with torch.inference_mode():
             unchanged = predictor.probabilities(inputs).numpy()[0]
         np.testing.assert_allclose(unchanged, expected)
+
+    def test_compact_baseline_checkpoint_loads_and_predicts(self):
+        torch.manual_seed(7)
+        checkpoint = {
+            "model_type": "landmark_mlp",
+            "class_to_idx": {"first": 0, "second": 1},
+            "model_state_dict": compact_landmark_model(
+                2, input_dim=HAND_FEATURE_DIM + 4,
+            ).state_dict(),
+            "input_is_mirrored": False,
+        }
+        predictor = LandmarkPredictor(checkpoint)
+        inputs = torch.zeros((2, LANDMARK_FEATURE_DIM + 12))
+
+        with torch.inference_mode():
+            probabilities = predictor.probabilities(inputs)
+
+        self.assertEqual(predictor.models[0][0].out_features, 64)
+        self.assertEqual(tuple(probabilities.shape), (2, 2))
+        torch.testing.assert_close(probabilities.sum(dim=1), torch.ones(2))
 
     def test_invalid_checkpoint_and_inputs_raise(self):
         checkpoint = baseline_checkpoint()

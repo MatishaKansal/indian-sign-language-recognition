@@ -149,6 +149,13 @@ def landmark_model(num_classes: int, input_dim: int = LANDMARK_FEATURE_DIM + 12)
     )
 
 
+def compact_landmark_model(num_classes: int, input_dim: int = HAND_FEATURE_DIM + 4) -> nn.Module:
+    """Build the smaller one-hidden-layer landmark baseline."""
+    return nn.Sequential(
+        nn.Linear(input_dim, 64), nn.ReLU(), nn.Dropout(0.1), nn.Linear(64, num_classes),
+    )
+
+
 def landmark_model_from_state(num_classes: int, state: dict[str, torch.Tensor]) -> nn.Module:
     """Load a hand-only baseline or one of the supported improved landmark variants."""
     first_layer = state.get("0.weight")
@@ -164,7 +171,18 @@ def landmark_model_from_state(num_classes: int, state: dict[str, torch.Tensor]) 
     }
     if first_layer is None or first_layer.ndim != 2 or first_layer.shape[1] not in valid_dims:
         raise ValueError("Landmark checkpoint has an unsupported input dimension.")
-    model = landmark_model(num_classes, input_dim=first_layer.shape[1])
+    if "3.weight" in state and "6.weight" not in state:
+        second_layer = state["3.weight"]
+        if (
+            second_layer.ndim != 2
+            or first_layer.shape[0] != 64
+            or second_layer.shape != (num_classes, 64)
+            or first_layer.shape[1] != HAND_FEATURE_DIM + 4
+        ):
+            raise ValueError("Compact landmark checkpoint has an unsupported architecture.")
+        model = compact_landmark_model(num_classes, input_dim=first_layer.shape[1])
+    else:
+        model = landmark_model(num_classes, input_dim=first_layer.shape[1])
     model.load_state_dict(state, strict=True)
     return model
 

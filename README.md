@@ -4,10 +4,10 @@ This project classifies static Indian Sign Language images into 15 configured cl
 
 ## Current models and result
 
-- **Baseline:** MLP using hand landmarks.
+- **Compact baseline:** one-hidden-layer MLP (64 units, 9,359 parameters) using hand landmarks.
 - **Improved:** ensemble of landmark MLPs using hand-shape and wrist position/scale features, combined with the MobileNetV3-Small image branch.
 
-On the current 2,250-image held-out test split, the baseline accuracy is **69.11%** and the improved-model accuracy is **72.93%**. These results are exploratory: signer IDs are inferred from folder names, and near-duplicate screening may miss matches. Keep the test split for final reporting, not model selection.
+On the current 2,250-image held-out test split, the compact baseline accuracy is **63.02%** (macro F1 **60.30%**) and the improved-model accuracy is **73.33%** (macro F1 **70.30%**). The compact baseline uses one 64-unit hidden layer and has fewer parameters than the previous two-hidden-layer MLP. Its architecture is selected as a simpler comparator, not tuned to a target accuracy. These results are exploratory: signer IDs are inferred from folder names, and near-duplicate screening may miss matches. Keep the test split for reporting, not model selection.
 
 ## Setup
 
@@ -36,11 +36,11 @@ Run notebooks from the project directory in this order:
 1. `01_dataset_exploration.ipynb` — optional inspection of the local image dataset.
 2. `02_data_preprocessing.ipynb` — create the signer-independent data splits.
 3. `03_landmark_extraction.ipynb` — extract and cache MediaPipe features.
-4. `04_landmark_baseline.ipynb` — train and save the baseline.
+4. `04_landmark_baseline.ipynb` — train and save the compact baseline.
 5. `05_image_head_training.ipynb` — train the improved model's image branch.
 6. `07_signer_cross_validation.ipynb` — select landmark features using training signers.
 7. `06_improved_ensemble.ipynb` — train the improved ensemble using the selected features.
-8. `08_model_comparison.ipynb` — report the final baseline/improved comparison.
+8. `08_model_comparison.ipynb` — report the final compact-baseline/improved comparison.
 9. `09_webcam_testing.ipynb` — run local webcam inference.
 
 Run notebook 08 only after both model checkpoints have been created. Do not use its test results to select features or training settings.
