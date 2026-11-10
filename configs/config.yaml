@@ -1,0 +1,70 @@
+project:
+  name: "Static 15-Class Indian Sign Language Recognition"
+  seed: 42
+
+data:
+  # Set this to the directory containing the dataset's class folders.
+  # Relative paths are resolved from the ISL-Recognition project directory.
+  dataset_root: "data/raw/isl_real_life_words"
+  # Optional CSV with image path and verified signer ID columns.
+  metadata_file: "data/processed/signer_metadata.csv"
+  metadata_image_column: "image"
+  metadata_signer_column: "signer"
+  included_classes:
+    - "agree"
+    - "bad"
+    - "become"
+    - "doctor"
+    - "from"
+    - "pain"
+    - "secondary"
+    - "skin"
+    - "small"
+    - "specific"
+    - "stand"
+    - "today"
+    - "warn"
+    - "work"
+    - "you"
+  expected_num_classes: 15
+  image_size: 224
+  images_are_mirrored: false
+  split_strategy: "signer"
+  split:
+    train: 0.80
+    validation: 0.10
+    test: 0.10
+
+model:
+  primary_models:
+    - "landmark_mlp"
+    - "landmark_mobilenet_ensemble"
+  num_classes: 15
+  image_size: 224
+  backbone: "mobilenet_v3_small"
+  image_head: "gated_residual"
+  pretrained: true
+
+training:
+  # The configured batch size is an upper bound when auto_batch_size is enabled.
+  auto_batch_size: true
+  batch_size: 16
+  frozen_epochs: 3
+  max_epochs: 35
+  head_learning_rate: 0.0001
+  backbone_learning_rate: 0.00001
+  weight_decay: 0.05
+  mixed_precision: true
+  early_stopping_patience: 7
+  class_weighted_loss: true
+
+paths:
+  raw_data: "data/raw"
+  processed_data: "data/processed/isl_15"
+  landmarks: "data/landmarks"
+  splits: "data/splits/isl_15"
+  checkpoints: "outputs/checkpoints/isl_15"
+  logs: "outputs/logs"
+  plots: "outputs/plots/isl_15"
+  predictions: "outputs/predictions/isl_15"
+  captured_images: "captured_images"

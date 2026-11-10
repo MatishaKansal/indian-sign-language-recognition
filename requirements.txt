@@ -1,0 +1,17 @@
+# Install a PyTorch and Torchvision pair from the official selector:
+# https://pytorch.org/get-started/locally/
+torch>=2.6
+torchvision>=0.21
+
+mediapipe==0.10.21
+opencv-contrib-python>=4.10,<5
+numpy>=1.26,<3
+Pillow>=10
+PyYAML>=6
+matplotlib>=3.9
+seaborn>=0.13
+pandas>=2.2
+scikit-learn>=1.5
+tqdm>=4.66
+ipykernel>=6.29
+jupyterlab>=4.2

@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+.pytest_cache/
+
+# IDE and OS files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+
+# Local data and generated experiment artifacts
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/landmarks/*
+!data/landmarks/.gitkeep
+data/splits/*
+!data/splits/.gitkeep
+outputs/checkpoints/*
+!outputs/checkpoints/.gitkeep
+outputs/logs/*
+!outputs/logs/.gitkeep
+outputs/plots/*
+!outputs/plots/.gitkeep
+outputs/predictions/*
+!outputs/predictions/.gitkeep
+outputs/feature_ablation_cv/*
+!outputs/feature_ablation_cv/.gitkeep
+captured_images/*
+!captured_images/.gitkeep
+
+# Model and cache artifacts
+*.pt
+*.pth
+*.onnx
+*.parquet
+*.sqlite
+*.db
